@@ -1,0 +1,61 @@
+<header class="mb-5">
+  <p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Mi perfil</p>
+  <h1 class="text-3xl font-semibold">Perfil</h1>
+</header>
+
+@if (loading()) {
+  <p class="text-xs text-slate-400 py-10 text-center">Cargando...</p>
+} @else {
+  <section class="bg-white dark:bg-slate-900 ring-1 ring-slate-100 dark:ring-slate-800 rounded-2xl p-4 mb-4">
+    <div class="flex items-center gap-4">
+      @if (profile()?.avatar_url) {
+        <img [src]="profile()!.avatar_url!" alt="Avatar"
+             class="h-20 w-20 rounded-2xl object-cover ring-2 ring-primary-500" />
+      } @else {
+        <div class="h-20 w-20 rounded-2xl bg-primary-600 text-white grid place-items-center text-2xl font-semibold">
+          {{ initial() }}
+        </div>
+      }
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-semibold truncate">
+          {{ profile()?.nickname || profile()?.name || profile()?.email }}
+        </p>
+        <p class="text-xs text-slate-500 dark:text-slate-400 truncate">
+          {{ profile()?.email }}
+        </p>
+        <label class="mt-2 inline-block text-xs text-primary-600 dark:text-primary-400 cursor-pointer">
+          {{ uploading() ? 'Subiendo...' : 'Cambiar foto' }}
+          <input type="file" accept="image/*" (change)="onFile($event)"
+                 [disabled]="uploading()" class="hidden" />
+        </label>
+      </div>
+    </div>
+  </section>
+
+  <form [formGroup]="form" (ngSubmit)="submit()"
+        class="bg-white dark:bg-slate-900 ring-1 ring-slate-100 dark:ring-slate-800 rounded-2xl p-4 space-y-3">
+    <div>
+      <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Nombre</label>
+      <input type="text" formControlName="name"
+        class="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 text-sm" />
+    </div>
+
+    <div>
+      <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Apodo</label>
+      <input type="text" formControlName="nickname" placeholder="Opcional"
+        class="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 text-sm" />
+    </div>
+
+    @if (error()) {
+      <p class="text-xs text-rose-600 bg-rose-50 dark:bg-rose-950/40 rounded-lg px-3 py-2">{{ error() }}</p>
+    }
+    @if (info()) {
+      <p class="text-xs text-primary-700 dark:text-primary-300 bg-primary-50 dark:bg-primary-900/40 rounded-lg px-3 py-2">{{ info() }}</p>
+    }
+
+    <button type="submit" [disabled]="saving()"
+      class="w-full h-11 rounded-xl bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 disabled:opacity-60">
+      {{ saving() ? 'Guardando...' : 'Guardar' }}
+    </button>
+  </form>
+}
