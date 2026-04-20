@@ -1,115 +1,127 @@
 <header class="mb-5">
-  <p class="text-xs uppercase tracking-wider text-slate-500">Ahorro total</p>
+  <p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Ahorro total</p>
   <h1 class="text-3xl font-semibold">{{ total() | money }}</h1>
 </header>
 
 @if (!movingId()) {
   <form [formGroup]="form" (ngSubmit)="submit()"
-        class="bg-white ring-1 ring-slate-100 rounded-2xl p-4 mb-6 space-y-3">
-    <p class="text-sm font-semibold text-slate-700">
+        class="bg-white dark:bg-slate-900 ring-1 ring-slate-100 dark:ring-slate-800 rounded-2xl p-4 mb-6 space-y-3">
+    <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">
       {{ editingId() ? 'Editar bolsillo' : 'Nuevo bolsillo' }}
     </p>
 
     <div>
-      <label class="block text-xs font-medium text-slate-600 mb-1">Nombre</label>
+      <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Nombre</label>
       <input type="text" formControlName="name" placeholder="Vacaciones, Emergencias..."
-        class="w-full h-11 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm" />
+        class="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 text-sm" />
     </div>
 
     <div class="grid grid-cols-2 gap-3">
       <div>
-        <label class="block text-xs font-medium text-slate-600 mb-1">Meta (opcional)</label>
+        <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Meta (opcional)</label>
         <input type="number" step="0.01" formControlName="goal"
-          class="w-full h-11 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm" />
+          class="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 text-sm" />
       </div>
       <div>
-        <label class="block text-xs font-medium text-slate-600 mb-1">Color</label>
+        <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Color</label>
         <input type="color" formControlName="color"
-          class="w-full h-11 rounded-xl border border-slate-200 bg-slate-50 px-2" />
+          class="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-2" />
       </div>
     </div>
 
     @if (error()) {
-      <p class="text-xs text-rose-600 bg-rose-50 rounded-lg px-3 py-2">{{ error() }}</p>
+      <p class="text-xs text-rose-600 bg-rose-50 dark:bg-rose-950/40 rounded-lg px-3 py-2">{{ error() }}</p>
     }
 
     <div class="flex gap-2">
       <button type="submit" [disabled]="saving()"
-        class="flex-1 h-11 rounded-xl bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 disabled:opacity-60">
+        class="flex-1 h-11 rounded-xl bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 disabled:opacity-60">
         {{ saving() ? 'Guardando...' : (editingId() ? 'Actualizar' : 'Crear') }}
       </button>
       @if (editingId()) {
         <button type="button" (click)="cancel()"
-          class="h-11 px-5 rounded-xl bg-slate-100 text-slate-600 text-sm">Cancelar</button>
+          class="h-11 px-5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-sm">Cancelar</button>
       }
     </div>
   </form>
 } @else {
   <form [formGroup]="moveForm" (ngSubmit)="submitMove()"
-        class="bg-white ring-1 ring-slate-100 rounded-2xl p-4 mb-6 space-y-3">
+        class="bg-white dark:bg-slate-900 ring-1 ring-slate-100 dark:ring-slate-800 rounded-2xl p-4 mb-6 space-y-3">
     <p class="text-sm font-semibold"
-       [class]="moveType() === 'deposit' ? 'text-emerald-700' : 'text-rose-700'">
+       [class]="moveType() === 'deposit' ? 'text-primary-700 dark:text-primary-300' : 'text-rose-700'">
       {{ moveType() === 'deposit' ? 'Depositar al bolsillo' : 'Retirar del bolsillo' }}
     </p>
 
     <div>
-      <label class="block text-xs font-medium text-slate-600 mb-1">
+      <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">
         {{ moveType() === 'deposit' ? 'Desde cuenta' : 'Hacia cuenta' }}
       </label>
       <select formControlName="account_id"
-        class="w-full h-11 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm">
+        class="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 text-sm">
         @for (a of accounts(); track a.id) {
-          <option [value]="a.id">{{ a.name }}</option>
+          <option [value]="a.id">{{ a.name }} — {{ a.balance | money }}</option>
         }
       </select>
     </div>
 
     <div>
-      <label class="block text-xs font-medium text-slate-600 mb-1">Monto</label>
+      <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Monto</label>
       <input type="number" step="0.01" formControlName="amount"
-        class="w-full h-11 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm" />
+        class="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 text-sm" />
+      @if (moveType() === 'deposit' && moveAccount(); as acc) {
+        <p class="text-xs mt-1"
+           [class]="moveOver() ? 'text-rose-600' : 'text-slate-500 dark:text-slate-400'">
+          Cuenta disponible: {{ acc.balance | money }}
+        </p>
+      }
+      @if (moveType() === 'withdraw' && movingPocket(); as pk) {
+        <p class="text-xs mt-1"
+           [class]="moveOver() ? 'text-rose-600' : 'text-slate-500 dark:text-slate-400'">
+          Bolsillo disponible: {{ pk.balance | money }}
+        </p>
+      }
     </div>
 
     <div>
-      <label class="block text-xs font-medium text-slate-600 mb-1">Fecha</label>
+      <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Fecha</label>
       <input type="date" formControlName="date"
-        class="w-full h-11 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm" />
+        class="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 text-sm" />
     </div>
 
     <div>
-      <label class="block text-xs font-medium text-slate-600 mb-1">Descripción</label>
+      <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Descripción</label>
       <input type="text" formControlName="description"
-        class="w-full h-11 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm" />
+        class="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 text-sm" />
     </div>
 
     @if (error()) {
-      <p class="text-xs text-rose-600 bg-rose-50 rounded-lg px-3 py-2">{{ error() }}</p>
+      <p class="text-xs text-rose-600 bg-rose-50 dark:bg-rose-950/40 rounded-lg px-3 py-2">{{ error() }}</p>
     }
 
     <div class="flex gap-2">
-      <button type="submit" [disabled]="saving()"
+      <button type="submit" [disabled]="saving() || moveOver()"
         class="flex-1 h-11 rounded-xl text-white text-sm font-medium disabled:opacity-60"
-        [class]="moveType() === 'deposit' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-rose-600 hover:bg-rose-700'">
+        [class]="moveType() === 'deposit' ? 'bg-primary-600 hover:bg-primary-700' : 'bg-rose-600 hover:bg-rose-700'">
         {{ saving() ? 'Guardando...' : 'Confirmar' }}
       </button>
       <button type="button" (click)="cancelMove()"
-        class="h-11 px-5 rounded-xl bg-slate-100 text-slate-600 text-sm">Cancelar</button>
+        class="h-11 px-5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-sm">Cancelar</button>
     </div>
   </form>
 }
 
 <section class="mb-6">
-  <h2 class="text-xs uppercase tracking-wider text-slate-500 mb-2">Mis bolsillos</h2>
+  <h2 class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Mis bolsillos</h2>
   @if (loading()) {
     <p class="text-xs text-slate-400 py-10 text-center">Cargando...</p>
   } @else if (items().length === 0) {
-    <div class="bg-white ring-1 ring-slate-100 rounded-2xl p-8 text-center">
-      <p class="text-sm text-slate-500">Aún no tienes bolsillos.</p>
+    <div class="bg-white dark:bg-slate-900 ring-1 ring-slate-100 dark:ring-slate-800 rounded-2xl p-8 text-center">
+      <p class="text-sm text-slate-500 dark:text-slate-400">Aún no tienes bolsillos.</p>
     </div>
   } @else {
     <ul class="space-y-3">
       @for (p of items(); track p.id) {
-        <li class="bg-white ring-1 ring-slate-100 rounded-2xl p-4">
+        <li class="bg-white dark:bg-slate-900 ring-1 ring-slate-100 dark:ring-slate-800 rounded-2xl p-4">
           <div class="flex items-center gap-3 mb-3">
             <span class="h-10 w-10 rounded-xl grid place-items-center font-semibold text-white"
                   [style.background]="p.color || '#10b981'">
@@ -118,9 +130,9 @@
             <div class="flex-1 min-w-0">
               <p class="text-sm font-medium truncate">{{ p.name }}</p>
               @if (p.goal) {
-                <p class="text-xs text-slate-500">Meta {{ p.goal | money }}</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Meta {{ p.goal | money }}</p>
               } @else {
-                <p class="text-xs text-slate-500">Sin meta</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Sin meta</p>
               }
             </div>
             <span class="text-sm font-semibold text-emerald-600 whitespace-nowrap">
@@ -129,7 +141,7 @@
           </div>
 
           @if (p.goal) {
-            <div class="h-2 bg-slate-100 rounded-full overflow-hidden mb-3">
+            <div class="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mb-3">
               <div class="h-full rounded-full transition-all"
                    [style.width.%]="progress(p)"
                    [style.background]="p.color || '#10b981'"></div>
@@ -138,17 +150,17 @@
 
           <div class="flex gap-2">
             <button (click)="openMove(p, 'deposit')"
-              class="flex-1 h-9 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-medium hover:bg-emerald-100">
+              class="flex-1 h-9 rounded-lg bg-primary-50 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 text-xs font-medium hover:bg-primary-100 dark:hover:bg-primary-900/60">
               + Depositar
             </button>
             <button (click)="openMove(p, 'withdraw')"
-              class="flex-1 h-9 rounded-lg bg-rose-50 text-rose-700 text-xs font-medium hover:bg-rose-100">
+              class="flex-1 h-9 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 text-xs font-medium hover:bg-rose-100">
               − Retirar
             </button>
             <button (click)="edit(p)"
-              class="h-9 px-3 rounded-lg bg-slate-100 text-slate-600 text-xs">Editar</button>
+              class="h-9 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs">Editar</button>
             <button (click)="remove(p.id)"
-              class="h-9 px-3 rounded-lg bg-slate-100 text-slate-400 hover:text-rose-600 text-xs">×</button>
+              class="h-9 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-rose-600 text-xs">×</button>
           </div>
         </li>
       }
@@ -157,9 +169,9 @@
 </section>
 
 @if (movements().length > 0) {
-  <section class="bg-white ring-1 ring-slate-100 rounded-2xl p-4">
-    <h2 class="text-sm font-semibold text-slate-700 mb-3">Últimos movimientos</h2>
-    <ul class="divide-y divide-slate-100">
+  <section class="bg-white dark:bg-slate-900 ring-1 ring-slate-100 dark:ring-slate-800 rounded-2xl p-4">
+    <h2 class="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-3">Últimos movimientos</h2>
+    <ul class="divide-y divide-slate-100 dark:divide-slate-800">
       @for (m of movements(); track m.id) {
         <li class="flex items-center gap-3 py-3">
           <span class="h-8 w-8 rounded-lg grid place-items-center text-xs font-semibold text-white"
@@ -170,7 +182,7 @@
             <p class="text-sm font-medium truncate">
               {{ m.description || m.pocket?.name || 'Movimiento' }}
             </p>
-            <p class="text-xs text-slate-500">
+            <p class="text-xs text-slate-500 dark:text-slate-400">
               {{ m.account?.name || '—' }} · {{ m.date }}
             </p>
           </div>

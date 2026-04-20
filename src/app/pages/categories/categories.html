@@ -1,20 +1,20 @@
 <header class="mb-5">
   <h1 class="text-2xl font-semibold">Categorías</h1>
-  <p class="text-sm text-slate-500">Organiza tus ingresos y gastos.</p>
+  <p class="text-sm text-slate-500 dark:text-slate-400">Organiza tus ingresos y gastos.</p>
 </header>
 
 <form [formGroup]="form" (ngSubmit)="submit()"
-      class="bg-white ring-1 ring-slate-100 rounded-2xl p-4 mb-6 space-y-3">
-  <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl">
+      class="bg-white dark:bg-slate-900 ring-1 ring-slate-100 dark:ring-slate-800 rounded-2xl p-4 mb-6 space-y-3">
+  <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
     <button type="button"
             (click)="form.patchValue({ type: 'expense' })"
-            [class]="form.value.type === 'expense' ? 'bg-rose-600 text-white shadow' : 'text-slate-500'"
+            [class]="form.value.type === 'expense' ? 'bg-rose-600 text-white shadow' : 'text-slate-500 dark:text-slate-400'"
             class="h-10 rounded-lg text-sm font-medium transition">
       Gasto
     </button>
     <button type="button"
             (click)="form.patchValue({ type: 'income' })"
-            [class]="form.value.type === 'income' ? 'bg-emerald-600 text-white shadow' : 'text-slate-500'"
+            [class]="form.value.type === 'income' ? 'bg-primary-600 text-white shadow' : 'text-slate-500 dark:text-slate-400'"
             class="h-10 rounded-lg text-sm font-medium transition">
       Ingreso
     </button>
@@ -22,9 +22,9 @@
 
   <div class="flex gap-2">
     <input type="text" formControlName="name" placeholder="Nombre"
-      class="flex-1 h-11 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm" />
+      class="flex-1 h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 text-sm" />
     <button type="submit" [disabled]="saving()"
-      class="h-11 px-4 rounded-xl bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 disabled:opacity-60">
+      class="h-11 px-4 rounded-xl bg-primary-600 text-white text-sm font-medium hover:bg-primary-700 disabled:opacity-60">
       {{ saving() ? '...' : 'Crear' }}
     </button>
   </div>
@@ -34,22 +34,22 @@
       <button type="button" (click)="form.patchValue({ color: c })"
               [style.background]="c"
               [class.ring-2]="form.value.color === c"
-              class="h-8 w-8 rounded-full ring-offset-2 ring-slate-900"></button>
+              class="h-8 w-8 rounded-full ring-offset-2 ring-slate-900 dark:ring-white"></button>
     }
   </div>
 
   @if (error()) {
-    <p class="text-xs text-rose-600 bg-rose-50 rounded-lg px-3 py-2">{{ error() }}</p>
+    <p class="text-xs text-rose-600 bg-rose-50 dark:bg-rose-950/40 rounded-lg px-3 py-2">{{ error() }}</p>
   }
 </form>
 
 <section class="space-y-6">
   <div>
-    <h2 class="text-xs uppercase tracking-wider text-slate-500 mb-2">Gastos</h2>
+    <h2 class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Gastos</h2>
     @if (expense().length === 0) {
       <p class="text-xs text-slate-400">Aún sin categorías de gasto.</p>
     } @else {
-      <ul class="bg-white ring-1 ring-slate-100 rounded-2xl divide-y divide-slate-100">
+      <ul class="bg-white dark:bg-slate-900 ring-1 ring-slate-100 dark:ring-slate-800 rounded-2xl divide-y divide-slate-100 dark:divide-slate-800">
         @for (c of expense(); track c.id) {
           <li class="flex items-center gap-3 p-3">
             <span class="h-8 w-8 rounded-full" [style.background]="c.color || '#f43f5e'"></span>
@@ -62,11 +62,11 @@
   </div>
 
   <div>
-    <h2 class="text-xs uppercase tracking-wider text-slate-500 mb-2">Ingresos</h2>
+    <h2 class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">Ingresos</h2>
     @if (income().length === 0) {
       <p class="text-xs text-slate-400">Aún sin categorías de ingreso.</p>
     } @else {
-      <ul class="bg-white ring-1 ring-slate-100 rounded-2xl divide-y divide-slate-100">
+      <ul class="bg-white dark:bg-slate-900 ring-1 ring-slate-100 dark:ring-slate-800 rounded-2xl divide-y divide-slate-100 dark:divide-slate-800">
         @for (c of income(); track c.id) {
           <li class="flex items-center gap-3 p-3">
             <span class="h-8 w-8 rounded-full" [style.background]="c.color || '#10b981'"></span>

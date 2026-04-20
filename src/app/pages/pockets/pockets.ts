@@ -1,4 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { PocketsService } from '../../core/pockets.service';
 import { AccountsService } from '../../core/accounts.service';
@@ -39,6 +40,34 @@ export class PocketsPage {
     amount: [0, [Validators.required, Validators.min(0.01)]],
     description: [''],
     date: [new Date().toISOString().slice(0, 10), Validators.required],
+  });
+
+  readonly moveAmount = toSignal(this.moveForm.controls.amount.valueChanges, {
+    initialValue: this.moveForm.controls.amount.value,
+  });
+  readonly moveAccountId = toSignal(this.moveForm.controls.account_id.valueChanges, {
+    initialValue: this.moveForm.controls.account_id.value,
+  });
+
+  readonly movingPocket = computed<Pocket | null>(() => {
+    const id = this.movingId();
+    return this.items().find((p) => p.id === id) ?? null;
+  });
+
+  readonly moveAccount = computed<Account | null>(() => {
+    const id = this.moveAccountId();
+    return this.accounts().find((a) => a.id === id) ?? null;
+  });
+
+  readonly moveOver = computed<boolean>(() => {
+    const amount = Number(this.moveAmount()) || 0;
+    if (amount <= 0) return false;
+    if (this.moveType() === 'deposit') {
+      const acc = this.moveAccount();
+      return acc ? amount > Number(acc.balance) : false;
+    }
+    const p = this.movingPocket();
+    return p ? amount > Number(p.balance) : false;
   });
 
   constructor() {
@@ -148,6 +177,14 @@ export class PocketsPage {
   async submitMove() {
     if (this.moveForm.invalid) {
       this.moveForm.markAllAsTouched();
+      return;
+    }
+    if (this.moveOver()) {
+      this.error.set(
+        this.moveType() === 'deposit'
+          ? 'No hay saldo suficiente en la cuenta.'
+          : 'No hay saldo suficiente en el bolsillo.',
+      );
       return;
     }
     const pocketId = this.movingId();

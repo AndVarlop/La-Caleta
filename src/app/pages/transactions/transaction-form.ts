@@ -6,11 +6,12 @@ import { TransactionsService } from '../../core/transactions.service';
 import { CategoriesService } from '../../core/categories.service';
 import { AccountsService } from '../../core/accounts.service';
 import { Account, Category, TxType } from '../../core/models';
+import { MoneyPipe } from '../../shared/money.pipe';
 
 @Component({
   selector: 'app-transaction-form',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, MoneyPipe],
   templateUrl: './transaction-form.html',
 })
 export class TransactionFormPage {
@@ -43,6 +44,34 @@ export class TransactionFormPage {
   readonly categories = computed<Category[]>(() =>
     this.allCategories().filter((c) => c.type === this.currentType()),
   );
+
+  readonly currentAccountId = toSignal(this.form.controls.account_id.valueChanges, {
+    initialValue: this.form.controls.account_id.value,
+  });
+  readonly currentAmount = toSignal(this.form.controls.amount.valueChanges, {
+    initialValue: this.form.controls.amount.value,
+  });
+
+  readonly selectedAccount = computed<Account | null>(() => {
+    const id = this.currentAccountId();
+    return this.accounts().find((a) => a.id === id) ?? null;
+  });
+
+  readonly overBalance = computed<boolean>(() => {
+    if (this.currentType() !== 'expense') return false;
+    const acc = this.selectedAccount();
+    if (!acc) return false;
+    const amount = Number(this.currentAmount()) || 0;
+    const available = Number(acc.balance) || 0;
+    const originalAmount = this.originalAmount();
+    const originalAccount = this.originalAccountId();
+    const effective =
+      this.id() && originalAccount === acc.id ? available + originalAmount : available;
+    return amount > effective;
+  });
+
+  private readonly originalAmount = signal(0);
+  private readonly originalAccountId = signal<string | null>(null);
 
   constructor() {
     effect(() => {
@@ -79,6 +108,8 @@ export class TransactionFormPage {
       const list = await this.tx.list();
       const t = list.find((x) => x.id === paramId);
       if (t) {
+        this.originalAmount.set(t.type === 'expense' ? Number(t.amount) : 0);
+        this.originalAccountId.set(t.account_id);
         this.form.patchValue(
           {
             type: t.type,
@@ -103,6 +134,10 @@ export class TransactionFormPage {
   async submit() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      return;
+    }
+    if (this.overBalance()) {
+      this.error.set('No tienes saldo suficiente en esa cuenta.');
       return;
     }
     this.saving.set(true);
