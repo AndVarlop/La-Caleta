@@ -1,4 +1,4 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { Session, User } from '@supabase/supabase-js';
 import { SupabaseService } from './supabase.service';
 import { Profile } from './models';
@@ -11,6 +11,7 @@ export class AuthService {
   readonly user = computed<User | null>(() => this.session()?.user ?? null);
   readonly isAuthenticated = computed(() => !!this.session());
   readonly ready = signal(false);
+  readonly profile = signal<Profile | null>(null);
 
   constructor() {
     this.sb.client.auth.getSession().then(({ data }) => {
@@ -20,6 +21,20 @@ export class AuthService {
     this.sb.client.auth.onAuthStateChange((_event, session) => {
       this.session.set(session);
     });
+    effect(() => {
+      const u = this.user();
+      if (u) this.refreshProfile();
+      else this.profile.set(null);
+    });
+  }
+
+  async refreshProfile() {
+    try {
+      const p = await this.getProfile();
+      this.profile.set(p);
+    } catch {
+      this.profile.set(null);
+    }
   }
 
   async signIn(email: string, password: string) {
@@ -56,15 +71,17 @@ export class AuthService {
 
   async updateProfile(patch: Partial<Profile>): Promise<Profile> {
     const uid = this.user()?.id;
+    const email = this.user()?.email;
     if (!uid) throw new Error('No autenticado');
     const { data, error } = await this.sb.client
       .from('profiles')
-      .update(patch)
-      .eq('id', uid)
+      .upsert({ id: uid, email: email ?? '', ...patch }, { onConflict: 'id' })
       .select()
       .single();
     if (error) throw error;
-    return data as Profile;
+    const p = data as Profile;
+    this.profile.set(p);
+    return p;
   }
 
   async uploadAvatar(file: File): Promise<string> {

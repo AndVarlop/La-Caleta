@@ -2,6 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TransactionsService } from '../../core/transactions.service';
 import { PocketsService } from '../../core/pockets.service';
+import { AuthService } from '../../core/auth.service';
 import { MoneyPipe } from '../../shared/money.pipe';
 import { ChartDirective } from '../../shared/chart.directive';
 import { CategoryTotal, MonthSummary, TransactionWithRelations } from '../../core/models';
@@ -16,6 +17,16 @@ import { ChartConfiguration } from 'chart.js';
 export class DashboardPage {
   private readonly tx = inject(TransactionsService);
   private readonly pockets = inject(PocketsService);
+  private readonly auth = inject(AuthService);
+
+  readonly profile = this.auth.profile;
+  readonly user = this.auth.user;
+
+  greetName(): string {
+    const p = this.profile();
+    const u = this.user();
+    return p?.nickname || p?.name || u?.email?.split('@')[0] || '';
+  }
 
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);

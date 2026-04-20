@@ -1,12 +1,28 @@
 <div class="min-h-dvh bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 pb-20 md:pb-0 md:pl-64 transition-colors">
   <aside class="hidden md:flex md:flex-col md:fixed md:inset-y-0 md:left-0 md:w-64 bg-white dark:bg-slate-900 border-r border-slate-100 dark:border-slate-800 p-6">
-    <div class="flex items-center gap-3 mb-8">
-      <div class="h-10 w-10 rounded-2xl bg-primary-600 text-white grid place-items-center font-semibold">LC</div>
-      <div>
-        <p class="text-sm font-semibold">LaCaleta</p>
+    <div class="flex items-center gap-3 mb-4">
+      <div class="h-10 w-10 rounded-2xl bg-primary-600 text-white grid place-items-center font-semibold overflow-hidden">
+        <!-- logo slot: reemplaza por <img src="logo.png" class="h-full w-full object-cover" /> -->
+        LC
+      </div>
+      <p class="text-base font-semibold">LaCaleta</p>
+    </div>
+
+    <a routerLink="/profile"
+       class="flex items-center gap-3 p-2 mb-4 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800">
+      @if (profile()?.avatar_url) {
+        <img [src]="profile()!.avatar_url!" alt="Avatar"
+             class="h-10 w-10 rounded-xl object-cover ring-2 ring-primary-500" />
+      } @else {
+        <span class="h-10 w-10 rounded-xl bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 grid place-items-center font-semibold">
+          {{ initial() }}
+        </span>
+      }
+      <div class="min-w-0">
+        <p class="text-sm font-semibold truncate max-w-[9rem]">{{ displayName() }}</p>
         <p class="text-xs text-slate-500 dark:text-slate-400 truncate max-w-[9rem]">{{ user()?.email }}</p>
       </div>
-    </div>
+    </a>
 
     <nav class="flex flex-col gap-1 text-sm">
       <a routerLink="/dashboard" routerLinkActive="bg-primary-50 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300" class="px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Dashboard</a>

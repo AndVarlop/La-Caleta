@@ -1,6 +1,9 @@
 <header class="flex items-center justify-between mb-6">
   <div>
-    <p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Balance total</p>
+    <p class="text-sm text-slate-500 dark:text-slate-400">
+      Hola<span class="font-semibold text-slate-900 dark:text-slate-100">{{ greetName() ? ', ' + greetName() : '' }}</span> 👋
+    </p>
+    <p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 mt-2">Este es tu balance</p>
     <h1 class="text-3xl font-semibold">{{ balance() | money }}</h1>
   </div>
   <a routerLink="/transactions/new"

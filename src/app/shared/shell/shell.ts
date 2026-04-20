@@ -13,6 +13,17 @@ export class ShellComponent {
   private readonly router = inject(Router);
 
   readonly user = this.auth.user;
+  readonly profile = this.auth.profile;
+
+  displayName(): string {
+    const p = this.profile();
+    const u = this.user();
+    return p?.nickname || p?.name || u?.email?.split('@')[0] || 'Usuario';
+  }
+
+  initial(): string {
+    return (this.displayName() || '?').charAt(0).toUpperCase();
+  }
 
   async logout() {
     await this.auth.signOut();
