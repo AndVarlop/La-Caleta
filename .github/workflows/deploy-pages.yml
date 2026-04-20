@@ -1,0 +1,89 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Compute base href
+        id: basehref
+        shell: bash
+        run: |
+          REPO_NAME='${{ github.event.repository.name }}'
+          OWNER='${{ github.repository_owner }}'
+
+          if [[ "$REPO_NAME" == "$OWNER.github.io" ]]; then
+            BASE_HREF="/"
+          else
+            BASE_HREF="/$REPO_NAME/"
+          fi
+
+          echo "base_href=$BASE_HREF" >> "$GITHUB_OUTPUT"
+
+      - name: Build (production)
+        run: >-
+          npm run build --
+          --configuration production
+          --base-href "${{ steps.basehref.outputs.base_href }}"
+          --deploy-url "${{ steps.basehref.outputs.base_href }}"
+
+      - name: Prepare SPA entry files
+        shell: bash
+        run: |
+          APP_DIR="dist/la-caleta/browser"
+
+          # Disable Jekyll processing on GitHub Pages.
+          touch "$APP_DIR/.nojekyll"
+
+          # Angular SSR build outputs index.csr.html for client-side rendering.
+          if [ -f "$APP_DIR/index.csr.html" ]; then
+            cp "$APP_DIR/index.csr.html" "$APP_DIR/index.html"
+          fi
+
+          # GitHub Pages + Angular Router deep links: serve the app for 404s.
+          cp "$APP_DIR/index.html" "$APP_DIR/404.html"
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/la-caleta/browser
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
