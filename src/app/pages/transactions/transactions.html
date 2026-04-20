@@ -1,0 +1,63 @@
+<header class="flex items-center justify-between mb-5">
+  <h1 class="text-2xl font-semibold">Transacciones</h1>
+  <a routerLink="/transactions/new"
+     class="inline-flex h-10 items-center px-4 rounded-xl bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700">
+    + Nueva
+  </a>
+</header>
+
+<form [formGroup]="filters" class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
+  <select formControlName="type"
+    class="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm">
+    <option value="">Todos</option>
+    <option value="income">Ingresos</option>
+    <option value="expense">Gastos</option>
+  </select>
+  <input type="date" formControlName="from"
+    class="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm" />
+  <input type="date" formControlName="to"
+    class="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm" />
+  <button type="button" (click)="clear()"
+    class="h-10 rounded-xl bg-slate-100 text-slate-600 text-sm">Limpiar</button>
+</form>
+
+@if (error()) {
+  <p class="text-sm text-rose-600 bg-rose-50 rounded-lg px-3 py-2 mb-4">{{ error() }}</p>
+}
+
+@if (loading()) {
+  <p class="text-xs text-slate-400 text-center py-10">Cargando...</p>
+} @else if (items().length === 0) {
+  <div class="bg-white ring-1 ring-slate-100 rounded-2xl p-8 text-center">
+    <p class="text-sm text-slate-500">Sin transacciones.</p>
+    <a routerLink="/transactions/new" class="mt-3 inline-block text-sm text-emerald-600 font-medium">Registrar la primera</a>
+  </div>
+} @else {
+  @for (group of grouped(); track group.date) {
+    <section class="mb-4">
+      <p class="text-xs uppercase text-slate-500 mb-2 px-1">{{ group.date }}</p>
+      <ul class="bg-white ring-1 ring-slate-100 rounded-2xl divide-y divide-slate-100">
+        @for (t of group.txs; track t.id) {
+          <li class="flex items-center gap-3 p-3">
+            <span class="h-10 w-10 rounded-full grid place-items-center text-white text-sm font-semibold"
+                  [style.background]="t.category?.color || (t.type === 'income' ? '#10b981' : '#f43f5e')">
+              {{ (t.category?.name || '?').charAt(0) }}
+            </span>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium truncate">{{ t.description || t.category?.name || 'Sin descripción' }}</p>
+              <p class="text-xs text-slate-500 truncate">{{ t.category?.name || '—' }} · {{ t.account?.name }}</p>
+            </div>
+            <span [class]="t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'"
+                  class="text-sm font-semibold">
+              {{ t.type === 'income' ? '+' : '−' }} {{ t.amount | money }}
+            </span>
+            <a [routerLink]="['/transactions', t.id]"
+               class="text-xs text-slate-400 hover:text-emerald-600 ml-1">Editar</a>
+            <button (click)="remove(t.id)"
+                    class="text-xs text-slate-400 hover:text-rose-600 ml-2">×</button>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+}

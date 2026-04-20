@@ -1,0 +1,43 @@
+<header class="mb-5">
+  <p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Configuración</p>
+  <h1 class="text-3xl font-semibold">Apariencia</h1>
+</header>
+
+<section class="bg-white dark:bg-slate-900 ring-1 ring-slate-100 dark:ring-slate-800 rounded-2xl p-4 mb-4">
+  <h2 class="text-sm font-semibold mb-3">Color principal</h2>
+  <div class="grid grid-cols-4 sm:grid-cols-8 gap-3">
+    @for (p of theme.palettes; track p.id) {
+      <button type="button" (click)="pick(p.id)"
+        class="flex flex-col items-center gap-1 group">
+        <span class="h-12 w-12 rounded-2xl ring-2 transition"
+              [style.background]="p.swatch"
+              [class.ring-transparent]="theme.palette() !== p.id"
+              [class.ring-slate-900]="theme.palette() === p.id"
+              [class.dark:ring-white]="theme.palette() === p.id"></span>
+        <span class="text-[11px] text-slate-500 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">
+          {{ p.label }}
+        </span>
+      </button>
+    }
+  </div>
+</section>
+
+<section class="bg-white dark:bg-slate-900 ring-1 ring-slate-100 dark:ring-slate-800 rounded-2xl p-4">
+  <h2 class="text-sm font-semibold mb-3">Tema</h2>
+  <div class="grid grid-cols-2 gap-3">
+    <button type="button" (click)="theme.setMode('light')"
+      class="h-20 rounded-2xl ring-2 flex flex-col items-center justify-center gap-1 bg-slate-50 text-slate-900 transition"
+      [class.ring-primary-500]="theme.mode() === 'light'"
+      [class.ring-transparent]="theme.mode() !== 'light'">
+      <span class="text-xl">☀</span>
+      <span class="text-xs font-medium">Claro</span>
+    </button>
+    <button type="button" (click)="theme.setMode('dark')"
+      class="h-20 rounded-2xl ring-2 flex flex-col items-center justify-center gap-1 bg-slate-900 text-white transition"
+      [class.ring-primary-500]="theme.mode() === 'dark'"
+      [class.ring-transparent]="theme.mode() !== 'dark'">
+      <span class="text-xl">☾</span>
+      <span class="text-xs font-medium">Oscuro</span>
+    </button>
+  </div>
+</section>
