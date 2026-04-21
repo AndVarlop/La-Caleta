@@ -54,6 +54,29 @@
   </div>
 </section>
 
+<section class="bg-white dark:bg-slate-900 ring-1 ring-slate-100 dark:ring-slate-800 rounded-2xl p-4 mb-4">
+  <h2 class="text-sm font-semibold mb-1">Cierre por inactividad</h2>
+  <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">Tu sesión se cierra sola si no interactúas.</p>
+  <div class="grid grid-cols-4 gap-2">
+    @for (o of idleOptions; track o.ms) {
+      <button type="button" (click)="pickIdle(o.ms)"
+        class="h-10 rounded-xl text-xs font-medium ring-2 transition"
+        [class.ring-primary-500]="idle.timeoutMs() === o.ms"
+        [class.bg-primary-50]="idle.timeoutMs() === o.ms"
+        [class.dark:bg-primary-900/40]="idle.timeoutMs() === o.ms"
+        [class.text-primary-700]="idle.timeoutMs() === o.ms"
+        [class.dark:text-primary-300]="idle.timeoutMs() === o.ms"
+        [class.ring-transparent]="idle.timeoutMs() !== o.ms"
+        [class.bg-slate-100]="idle.timeoutMs() !== o.ms"
+        [class.dark:bg-slate-800]="idle.timeoutMs() !== o.ms"
+        [class.text-slate-600]="idle.timeoutMs() !== o.ms"
+        [class.dark:text-slate-300]="idle.timeoutMs() !== o.ms">
+        {{ o.label }}
+      </button>
+    }
+  </div>
+</section>
+
 <button type="button" (click)="logout()"
   class="w-full h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 font-medium hover:bg-rose-100 dark:hover:bg-rose-950/60">
   Cerrar sesión

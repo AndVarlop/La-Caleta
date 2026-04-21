@@ -1,6 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
+import { IdleService } from '../../core/idle.service';
 
 @Component({
   selector: 'app-shell',
@@ -8,13 +9,22 @@ import { AuthService } from '../../core/auth.service';
   imports: [RouterOutlet, RouterLink, RouterLinkActive],
   templateUrl: './shell.html',
 })
-export class ShellComponent {
+export class ShellComponent implements OnInit, OnDestroy {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly idle = inject(IdleService);
 
   readonly user = this.auth.user;
   readonly profile = this.auth.profile;
   readonly fabOpen = signal(false);
+
+  ngOnInit() {
+    this.idle.start(() => this.logout());
+  }
+
+  ngOnDestroy() {
+    this.idle.stop();
+  }
 
   displayName(): string {
     const p = this.profile();
