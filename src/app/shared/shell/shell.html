@@ -61,19 +61,43 @@
     <router-outlet />
   </main>
 
+  @if (fabOpen()) {
+    <div (click)="closeFab()"
+         class="md:hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-30"></div>
+
+    <div class="md:hidden fixed bottom-24 left-1/2 -translate-x-1/2 z-40 w-60 bg-white dark:bg-slate-900 ring-1 ring-slate-100 dark:ring-slate-800 rounded-2xl shadow-2xl p-2">
+      <p class="text-[11px] uppercase tracking-wider text-slate-400 px-3 pt-2 pb-1">Agregar</p>
+      <a routerLink="/transactions" (click)="closeFab()"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800">
+        <span class="h-8 w-8 grid place-items-center rounded-lg bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 text-sm font-bold">T</span>
+        <span class="text-sm font-medium">Transacciones</span>
+      </a>
+      <a routerLink="/accounts" (click)="closeFab()"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800">
+        <span class="h-8 w-8 grid place-items-center rounded-lg bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 text-sm font-bold">C</span>
+        <span class="text-sm font-medium">Cuentas</span>
+      </a>
+      <a routerLink="/categories" (click)="closeFab()"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800">
+        <span class="h-8 w-8 grid place-items-center rounded-lg bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300 text-sm font-bold">#</span>
+        <span class="text-sm font-medium">Categorías</span>
+      </a>
+    </div>
+  }
+
   <nav
-    class="md:hidden fixed bottom-0 inset-x-0 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 grid grid-cols-5 text-[11px] font-medium text-slate-500 dark:text-slate-400">
+    class="md:hidden fixed bottom-0 inset-x-0 z-20 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 grid grid-cols-5 text-[11px] font-medium text-slate-500 dark:text-slate-400">
     <a routerLink="/dashboard" routerLinkActive="text-primary-600 dark:text-primary-400"
       class="py-3 text-center">Inicio</a>
     <a routerLink="/transactions" routerLinkActive="text-primary-600 dark:text-primary-400"
       class="py-3 text-center">Movs</a>
-    <a routerLink="/transactions/new" routerLinkActive="text-primary-600 dark:text-primary-400"
-      class="py-3 text-center">
+    <button type="button" (click)="toggleFab()" class="py-3 text-center">
       <span
-        class="inline-grid place-items-center h-10 w-10 -mt-5 rounded-full bg-primary-600 text-white text-xl font-bold shadow-lg">+</span>
-    </a>
-    <a routerLink="/pockets" routerLinkActive="text-primary-600 dark:text-primary-400"
-      class="py-3 text-center">Ahorro</a>
+        class="inline-grid place-items-center h-12 w-12 -mt-6 rounded-full bg-primary-600 text-white text-2xl font-bold shadow-lg transition"
+        [class.rotate-45]="fabOpen()">+</span>
+    </button>
+    <a routerLink="/profile" routerLinkActive="text-primary-600 dark:text-primary-400"
+      class="py-3 text-center">Perfil</a>
     <a routerLink="/settings" routerLinkActive="text-primary-600 dark:text-primary-400"
       class="py-3 text-center">Ajustes</a>
   </nav>

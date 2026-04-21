@@ -1,13 +1,25 @@
-<header class="flex items-center justify-between mb-6">
-  <div>
+<header class="flex items-stretch gap-4 mb-6">
+  <div class="flex-1 min-w-0 flex flex-col justify-center">
     <p class="text-sm text-slate-500 dark:text-slate-400">
       Hola<span class="font-semibold text-slate-900 dark:text-slate-100">{{ greetName() ? ', ' + greetName() : '' }}</span> 👋
     </p>
     <p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 mt-2">Este es tu balance</p>
     <h1 class="text-3xl font-semibold">{{ balance() | money }}</h1>
   </div>
+
+  <a routerLink="/profile" class="md:hidden self-stretch">
+    @if (profile()?.avatar_url) {
+      <img [src]="profile()!.avatar_url!" alt="Avatar"
+           class="h-full w-24 aspect-square rounded-2xl object-cover ring-2 ring-primary-500" />
+    } @else {
+      <div class="h-full w-24 aspect-square rounded-2xl bg-primary-600 text-white grid place-items-center text-3xl font-semibold ring-2 ring-primary-500">
+        {{ initial() }}
+      </div>
+    }
+  </a>
+
   <a routerLink="/transactions/new"
-     class="hidden md:inline-flex h-10 items-center px-4 rounded-xl bg-primary-600 text-white text-sm font-medium hover:bg-primary-700">
+     class="hidden md:inline-flex h-10 self-center items-center px-4 rounded-xl bg-primary-600 text-white text-sm font-medium hover:bg-primary-700">
     + Nueva
   </a>
 </header>

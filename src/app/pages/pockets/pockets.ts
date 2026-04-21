@@ -26,6 +26,8 @@ export class PocketsPage {
   readonly editingId = signal<string | null>(null);
   readonly movingId = signal<string | null>(null);
   readonly moveType = signal<PocketMovementType>('deposit');
+  readonly removingId = signal<string | null>(null);
+  readonly removeAccountId = signal<string>('');
 
   readonly total = computed(() => this.items().reduce((a, b) => a + Number(b.balance), 0));
 
@@ -51,6 +53,11 @@ export class PocketsPage {
 
   readonly movingPocket = computed<Pocket | null>(() => {
     const id = this.movingId();
+    return this.items().find((p) => p.id === id) ?? null;
+  });
+
+  readonly removingPocket = computed<Pocket | null>(() => {
+    const id = this.removingId();
     return this.items().find((p) => p.id === id) ?? null;
   });
 
@@ -147,14 +154,44 @@ export class PocketsPage {
     this.form.reset({ name: '', goal: 0, color: '#10b981' });
   }
 
-  async remove(id: string) {
-    if (!confirm('¿Eliminar bolsillo? Se perderán sus movimientos.')) return;
+  openRemove(p: Pocket) {
+    this.editingId.set(null);
+    this.movingId.set(null);
+    this.removingId.set(p.id);
+    const bal = Number(p.balance);
+    if (bal > 0) {
+      this.removeAccountId.set(this.accounts()[0]?.id ?? '');
+    } else {
+      this.removeAccountId.set('');
+    }
+  }
+
+  cancelRemove() {
+    this.removingId.set(null);
+    this.removeAccountId.set('');
+  }
+
+  async confirmRemove() {
+    const p = this.removingPocket();
+    if (!p) return;
+    const bal = Number(p.balance);
+    this.saving.set(true);
+    this.error.set(null);
     try {
-      await this.pockets.remove(id);
-      this.items.update((arr) => arr.filter((p) => p.id !== id));
-      this.movements.update((arr) => arr.filter((m) => m.pocket_id !== id));
+      if (bal > 0) {
+        const acc = this.removeAccountId();
+        if (!acc) throw new Error('Selecciona una cuenta para recibir el saldo');
+        await this.pockets.remove(p.id, { accountId: acc, amount: bal });
+      } else {
+        await this.pockets.remove(p.id);
+      }
+      this.removingId.set(null);
+      this.removeAccountId.set('');
+      await this.load();
     } catch (e: any) {
       this.error.set(e?.message ?? 'Error');
+    } finally {
+      this.saving.set(false);
     }
   }
 

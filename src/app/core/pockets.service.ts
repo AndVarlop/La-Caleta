@@ -36,7 +36,16 @@ export class PocketsService {
     return data as Pocket;
   }
 
-  async remove(id: string) {
+  async remove(id: string, refund?: { accountId: string; amount: number }) {
+    if (refund && refund.amount > 0) {
+      await this.move({
+        pocket_id: id,
+        account_id: refund.accountId,
+        type: 'withdraw',
+        amount: refund.amount,
+        description: 'Devolución al cerrar bolsillo',
+      });
+    }
     const { error } = await this.sb.client.from('pockets').delete().eq('id', id);
     if (error) throw error;
   }

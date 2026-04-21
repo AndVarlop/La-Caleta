@@ -3,7 +3,50 @@
   <h1 class="text-3xl font-semibold">{{ total() | money }}</h1>
 </header>
 
-@if (!movingId()) {
+@if (removingId()) {
+  <div class="bg-white dark:bg-slate-900 ring-1 ring-slate-100 dark:ring-slate-800 rounded-2xl p-4 mb-6 space-y-3">
+    <p class="text-sm font-semibold text-rose-700 dark:text-rose-300">Eliminar bolsillo</p>
+
+    @if (removingPocket(); as p) {
+      <p class="text-sm text-slate-600 dark:text-slate-300">
+        <span class="font-semibold">{{ p.name }}</span> tiene un saldo de
+        <span class="font-semibold text-emerald-600">{{ p.balance | money }}</span>.
+      </p>
+
+      @if (p.balance > 0) {
+        <div>
+          <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Devolver saldo a la cuenta</label>
+          <select [value]="removeAccountId()" (change)="removeAccountId.set($any($event.target).value)"
+            class="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 text-sm">
+            @for (a of accounts(); track a.id) {
+              <option [value]="a.id">{{ a.name }} — {{ a.balance | money }}</option>
+            }
+          </select>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            El saldo se transferirá a esta cuenta antes de eliminar el bolsillo.
+          </p>
+        </div>
+      } @else {
+        <p class="text-xs text-slate-500 dark:text-slate-400">
+          Este bolsillo no tiene saldo. Se eliminará directamente.
+        </p>
+      }
+
+      @if (error()) {
+        <p class="text-xs text-rose-600 bg-rose-50 dark:bg-rose-950/40 rounded-lg px-3 py-2">{{ error() }}</p>
+      }
+
+      <div class="flex gap-2">
+        <button type="button" (click)="confirmRemove()" [disabled]="saving()"
+          class="flex-1 h-11 rounded-xl bg-rose-600 text-white text-sm font-medium hover:bg-rose-700 disabled:opacity-60">
+          {{ saving() ? 'Eliminando...' : 'Eliminar' }}
+        </button>
+        <button type="button" (click)="cancelRemove()"
+          class="h-11 px-5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-sm">Cancelar</button>
+      </div>
+    }
+  </div>
+} @else if (!movingId()) {
   <form [formGroup]="form" (ngSubmit)="submit()"
         class="bg-white dark:bg-slate-900 ring-1 ring-slate-100 dark:ring-slate-800 rounded-2xl p-4 mb-6 space-y-3">
     <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">
@@ -159,7 +202,7 @@
             </button>
             <button (click)="edit(p)"
               class="h-9 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs">Editar</button>
-            <button (click)="remove(p.id)"
+            <button (click)="openRemove(p)"
               class="h-9 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-400 hover:text-rose-600 text-xs">×</button>
           </div>
         </li>

@@ -28,6 +28,10 @@ export class DashboardPage {
     return p?.nickname || p?.name || u?.email?.split('@')[0] || '';
   }
 
+  initial(): string {
+    return (this.greetName() || '?').charAt(0).toUpperCase();
+  }
+
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
   readonly balance = signal(0);

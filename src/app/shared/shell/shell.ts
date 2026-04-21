@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
 
@@ -14,6 +14,7 @@ export class ShellComponent {
 
   readonly user = this.auth.user;
   readonly profile = this.auth.profile;
+  readonly fabOpen = signal(false);
 
   displayName(): string {
     const p = this.profile();
@@ -23,6 +24,14 @@ export class ShellComponent {
 
   initial(): string {
     return (this.displayName() || '?').charAt(0).toUpperCase();
+  }
+
+  toggleFab() {
+    this.fabOpen.update((v) => !v);
+  }
+
+  closeFab() {
+    this.fabOpen.set(false);
   }
 
   async logout() {
