@@ -36,7 +36,7 @@
   @for (group of grouped(); track group.date) {
     <section class="mb-4">
       <p class="text-xs uppercase text-slate-500 dark:text-slate-400 mb-2 px-1">{{ group.date }}</p>
-      <ul class="bg-white dark:bg-slate-900 ring-1 ring-slate-100 dark:ring-slate-800 rounded-2xl divide-y divide-slate-100 dark:divide-slate-800">
+      <ul [appReveal]="'li'" class="bg-white dark:bg-slate-900 ring-1 ring-slate-100 dark:ring-slate-800 rounded-2xl divide-y divide-slate-100 dark:divide-slate-800">
         @for (t of group.txs; track t.id) {
           <li class="flex items-center gap-3 p-3">
             <span class="h-10 w-10 rounded-full grid place-items-center text-white text-sm font-semibold"

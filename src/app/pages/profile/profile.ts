@@ -5,11 +5,13 @@ import { TransactionsService } from '../../core/transactions.service';
 import { PocketsService } from '../../core/pockets.service';
 import { Pocket, TransactionWithRelations } from '../../core/models';
 import { MoneyPipe } from '../../shared/money.pipe';
+import { CountDirective } from '../../shared/count.directive';
+import { RevealDirective } from '../../shared/reveal.directive';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [RouterLink, MoneyPipe],
+  imports: [RouterLink, MoneyPipe, CountDirective, RevealDirective],
   templateUrl: './profile.html',
 })
 export class ProfilePage {

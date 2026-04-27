@@ -5,11 +5,13 @@ import { PocketsService } from '../../core/pockets.service';
 import { AccountsService } from '../../core/accounts.service';
 import { Account, Pocket, PocketMovementType, PocketMovementWithRelations } from '../../core/models';
 import { MoneyPipe } from '../../shared/money.pipe';
+import { CountDirective } from '../../shared/count.directive';
+import { RevealDirective } from '../../shared/reveal.directive';
 
 @Component({
   selector: 'app-pockets',
   standalone: true,
-  imports: [ReactiveFormsModule, MoneyPipe],
+  imports: [ReactiveFormsModule, MoneyPipe, CountDirective, RevealDirective],
   templateUrl: './pockets.html',
 })
 export class PocketsPage {

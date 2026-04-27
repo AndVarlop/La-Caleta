@@ -9,24 +9,25 @@
 
   <div class="relative w-full max-w-sm mx-auto">
     <div class="text-center mb-6">
-      <img src="Logo.png" alt="La Caleta" class="mx-auto h-16 w-16 object-contain drop-shadow-sm mb-3" />
+      <img appLogo3d src="Logo.png" alt="La Caleta"
+           class="mx-auto h-16 w-16 object-contain drop-shadow-sm mb-3 cursor-pointer" />
       <h1 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">Crea tu cuenta</h1>
       <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Empieza a controlar tu dinero.</p>
     </div>
 
-    <form [formGroup]="form" (ngSubmit)="submit()"
+    <form [formGroup]="form" (ngSubmit)="submit()" [appReveal]="'.fld'"
       class="space-y-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur rounded-3xl p-6 shadow-xl ring-1 ring-slate-100 dark:ring-slate-800">
-      <div>
+      <div class="fld">
         <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Nombre</label>
         <input type="text" autocomplete="name" formControlName="name"
           class="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 text-sm outline-none focus:border-primary-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-primary-100 dark:focus:ring-primary-900/40" />
       </div>
-      <div>
+      <div class="fld">
         <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Correo</label>
         <input type="email" autocomplete="email" formControlName="email"
           class="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 text-sm outline-none focus:border-primary-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-primary-100 dark:focus:ring-primary-900/40" />
       </div>
-      <div>
+      <div class="fld">
         <label class="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Contraseña</label>
         <input type="password" autocomplete="new-password" formControlName="password"
           class="w-full h-11 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 text-sm outline-none focus:border-primary-500 focus:bg-white dark:focus:bg-slate-900 focus:ring-2 focus:ring-primary-100 dark:focus:ring-primary-900/40" />
@@ -42,7 +43,7 @@
       }
 
       <button type="submit" [disabled]="loading()"
-        class="w-full h-11 rounded-xl bg-primary-600 text-white text-sm font-semibold shadow-lg shadow-primary-600/30 hover:bg-primary-700 hover:shadow-primary-600/40 disabled:opacity-60 transition">
+        class="fld w-full h-11 rounded-xl bg-primary-600 text-white text-sm font-semibold shadow-lg shadow-primary-600/30 hover:bg-primary-700 hover:shadow-primary-600/40 disabled:opacity-60 transition">
         {{ loading() ? 'Creando...' : 'Crear cuenta' }}
       </button>
     </form>

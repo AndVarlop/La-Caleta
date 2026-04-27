@@ -4,11 +4,12 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { TransactionsService } from '../../core/transactions.service';
 import { TransactionWithRelations, TxType } from '../../core/models';
 import { MoneyPipe } from '../../shared/money.pipe';
+import { RevealDirective } from '../../shared/reveal.directive';
 
 @Component({
   selector: 'app-transactions',
   standalone: true,
-  imports: [RouterLink, ReactiveFormsModule, MoneyPipe],
+  imports: [RouterLink, ReactiveFormsModule, MoneyPipe, RevealDirective],
   templateUrl: './transactions.html',
 })
 export class TransactionsPage {

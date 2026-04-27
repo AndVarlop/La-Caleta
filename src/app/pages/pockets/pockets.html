@@ -1,6 +1,6 @@
 <header class="mb-5">
   <p class="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">Ahorro total</p>
-  <h1 class="text-3xl font-semibold">{{ total() | money }}</h1>
+  <h1 class="text-3xl font-semibold" [appCount]="total()" prefix="$ "></h1>
 </header>
 
 @if (removingId()) {
@@ -162,7 +162,7 @@
       <p class="text-sm text-slate-500 dark:text-slate-400">Aún no tienes bolsillos.</p>
     </div>
   } @else {
-    <ul class="space-y-3">
+    <ul [appReveal]="'li'" class="space-y-3">
       @for (p of items(); track p.id) {
         <li class="bg-white dark:bg-slate-900 ring-1 ring-slate-100 dark:ring-slate-800 rounded-2xl p-4">
           <div class="flex items-center gap-3 mb-3">
@@ -178,9 +178,8 @@
                 <p class="text-xs text-slate-500 dark:text-slate-400">Sin meta</p>
               }
             </div>
-            <span class="text-sm font-semibold text-emerald-600 whitespace-nowrap">
-              {{ p.balance | money }}
-            </span>
+            <span class="text-sm font-semibold text-emerald-600 whitespace-nowrap"
+                  [appCount]="p.balance" prefix="$ "></span>
           </div>
 
           @if (p.goal) {

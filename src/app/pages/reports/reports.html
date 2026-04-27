@@ -21,21 +21,21 @@
 <section class="bg-white dark:bg-slate-900 rounded-2xl ring-1 ring-slate-100 dark:ring-slate-800 p-4">
   <div class="flex items-center justify-between mb-3">
     <h2 class="text-sm font-semibold text-slate-700 dark:text-slate-200">Gastos por categoría (mes)</h2>
-    <span class="text-xs text-slate-500 dark:text-slate-400">Total: {{ totalExpense() | money }}</span>
+    <span class="text-xs text-slate-500 dark:text-slate-400">Total: <span [appCount]="totalExpense()" prefix="$ "></span></span>
   </div>
 
   @if (byCategory().length > 0) {
     <div class="relative h-72 mb-4">
       <canvas [appChart]="pieChart()"></canvas>
     </div>
-    <ul class="divide-y divide-slate-100 dark:divide-slate-800">
+    <ul [appReveal]="'li'" class="divide-y divide-slate-100 dark:divide-slate-800">
       @for (c of byCategory(); track c.category_id) {
         <li class="flex items-center justify-between py-2">
           <span class="flex items-center gap-2 text-sm">
             <span class="h-3 w-3 rounded-full" [style.background]="c.color || '#10b981'"></span>
             {{ c.name }}
           </span>
-          <span class="text-sm font-medium">{{ c.total | money }}</span>
+          <span class="text-sm font-medium" [appCount]="c.total" prefix="$ "></span>
         </li>
       }
     </ul>

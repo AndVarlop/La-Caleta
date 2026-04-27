@@ -5,13 +5,15 @@ import { PocketsService } from '../../core/pockets.service';
 import { AuthService } from '../../core/auth.service';
 import { MoneyPipe } from '../../shared/money.pipe';
 import { ChartDirective } from '../../shared/chart.directive';
+import { CountDirective } from '../../shared/count.directive';
+import { RevealDirective } from '../../shared/reveal.directive';
 import { CategoryTotal, MonthSummary, TransactionWithRelations } from '../../core/models';
 import { ChartConfiguration } from 'chart.js';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RouterLink, MoneyPipe, ChartDirective],
+  imports: [RouterLink, MoneyPipe, ChartDirective, CountDirective, RevealDirective],
   templateUrl: './dashboard.html',
 })
 export class DashboardPage {

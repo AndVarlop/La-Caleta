@@ -38,7 +38,7 @@
   } @else if (recent().length === 0) {
     <p class="text-xs text-slate-500 dark:text-slate-400 py-6 text-center">Aún no hay transacciones.</p>
   } @else {
-    <ul class="divide-y divide-slate-100 dark:divide-slate-800">
+    <ul [appReveal]="'li'" class="divide-y divide-slate-100 dark:divide-slate-800">
       @for (t of recent(); track t.id) {
         <li class="flex items-center justify-between py-3">
           <div class="min-w-0">
@@ -62,7 +62,7 @@
     <p class="text-xs text-slate-500 dark:text-slate-400">{{ pocketsList().length }} bolsillos</p>
   </div>
   <div class="text-right">
-    <p class="text-base font-semibold text-primary-600">{{ pocketsTotal() | money }}</p>
+    <p class="text-base font-semibold text-primary-600" [appCount]="pocketsTotal()" prefix="$ "></p>
     <p class="text-xs text-slate-400">Ver ›</p>
   </div>
 </a>

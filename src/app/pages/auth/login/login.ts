@@ -2,11 +2,13 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth.service';
+import { Logo3dDirective } from '../../../shared/logo3d.directive';
+import { RevealDirective } from '../../../shared/reveal.directive';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, Logo3dDirective, RevealDirective],
   templateUrl: './login.html',
 })
 export class LoginPage {

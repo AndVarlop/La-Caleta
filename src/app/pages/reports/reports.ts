@@ -3,12 +3,13 @@ import { ChartConfiguration } from 'chart.js';
 import { TransactionsService } from '../../core/transactions.service';
 import { CategoryTotal, MonthlySeries } from '../../core/models';
 import { ChartDirective } from '../../shared/chart.directive';
-import { MoneyPipe } from '../../shared/money.pipe';
+import { CountDirective } from '../../shared/count.directive';
+import { RevealDirective } from '../../shared/reveal.directive';
 
 @Component({
   selector: 'app-reports',
   standalone: true,
-  imports: [ChartDirective, MoneyPipe],
+  imports: [ChartDirective, CountDirective, RevealDirective],
   templateUrl: './reports.html',
 })
 export class ReportsPage {

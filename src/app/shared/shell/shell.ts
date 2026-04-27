@@ -2,11 +2,12 @@ import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
 import { IdleService } from '../../core/idle.service';
+import { Logo3dDirective } from '../logo3d.directive';
 
 @Component({
   selector: 'app-shell',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, Logo3dDirective],
   templateUrl: './shell.html',
 })
 export class ShellComponent implements OnInit, OnDestroy {
