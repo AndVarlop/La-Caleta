@@ -41,7 +41,7 @@ jobs:
       - name: Prepare SPA entry files
         shell: bash
         run: |
-          APP_DIR="dist/la-caleta/browser"
+          APP_DIR="dist/la-caleta"
 
           # Disable Jekyll processing on GitHub Pages.
           touch "$APP_DIR/.nojekyll"
@@ -60,7 +60,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/la-caleta/browser
+          path: dist/la-caleta
 
   deploy:
     needs: build
