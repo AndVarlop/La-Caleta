@@ -6,19 +6,49 @@
   </a>
 </header>
 
-<form [formGroup]="filters" class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
+<!-- Month navigation -->
+@if (isMonthMode()) {
+  <div class="flex items-center justify-between bg-white dark:bg-slate-900 ring-1 ring-slate-100 dark:ring-slate-800 rounded-2xl px-4 py-3 mb-4">
+    <button type="button" (click)="prevMonth()"
+      class="h-9 w-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center text-lg font-semibold">
+      ‹
+    </button>
+    <span class="text-base font-semibold capitalize">{{ monthLabel() }}</span>
+    <button type="button" (click)="nextMonth()"
+      class="h-9 w-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center text-lg font-semibold">
+      ›
+    </button>
+  </div>
+} @else {
+  <div class="flex items-center gap-2 text-xs text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-950/30 rounded-xl px-3 py-2 mb-4">
+    <span>Filtrando por fecha personalizada</span>
+    <button type="button" (click)="clear()" class="ml-auto font-medium hover:underline">Volver al mes actual</button>
+  </div>
+}
+
+<!-- Filters -->
+<form [formGroup]="filters" class="grid grid-cols-2 md:grid-cols-5 gap-2 mb-5">
   <select formControlName="type"
     class="h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-sm">
-    <option value="">Todos</option>
+    <option value="">Todos los tipos</option>
     <option value="income">Ingresos</option>
     <option value="expense">Gastos</option>
+  </select>
+  <select formControlName="accountId"
+    class="h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-sm">
+    <option value="">Todas las cuentas</option>
+    @for (a of accountList(); track a.id) {
+      <option [value]="a.id">{{ a.name }}</option>
+    }
   </select>
   <input type="date" formControlName="from"
     class="h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-sm" />
   <input type="date" formControlName="to"
     class="h-10 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 text-sm" />
   <button type="button" (click)="clear()"
-    class="h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-sm">Limpiar</button>
+    class="h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-sm hover:bg-slate-200 dark:hover:bg-slate-700">
+    Limpiar
+  </button>
 </form>
 
 @if (error()) {
@@ -29,17 +59,17 @@
   <p class="text-xs text-slate-400 text-center py-10">Cargando...</p>
 } @else if (items().length === 0) {
   <div class="bg-white dark:bg-slate-900 ring-1 ring-slate-100 dark:ring-slate-800 rounded-2xl p-8 text-center">
-    <p class="text-sm text-slate-500 dark:text-slate-400">Sin transacciones.</p>
+    <p class="text-sm text-slate-500 dark:text-slate-400">Sin transacciones este mes.</p>
     <a routerLink="/transactions/new" class="mt-3 inline-block text-sm text-primary-600 dark:text-primary-400 font-medium">Registrar la primera</a>
   </div>
 } @else {
   @for (group of grouped(); track group.date) {
     <section class="mb-4">
-      <p class="text-xs uppercase text-slate-500 dark:text-slate-400 mb-2 px-1">{{ group.date }}</p>
+      <p class="text-xs uppercase tracking-wide text-slate-400 dark:text-slate-500 mb-2 px-1">{{ group.date }}</p>
       <ul [appReveal]="'li'" class="bg-white dark:bg-slate-900 ring-1 ring-slate-100 dark:ring-slate-800 rounded-2xl divide-y divide-slate-100 dark:divide-slate-800">
         @for (t of group.txs; track t.id) {
           <li class="flex items-center gap-3 p-3">
-            <span class="h-10 w-10 rounded-full grid place-items-center text-white text-sm font-semibold"
+            <span class="h-10 w-10 rounded-full grid place-items-center text-white text-sm font-semibold shrink-0"
                   [style.background]="t.category?.color || (t.type === 'income' ? '#10b981' : '#f43f5e')">
               {{ (t.category?.name || '?').charAt(0) }}
             </span>
@@ -47,14 +77,14 @@
               <p class="text-sm font-medium truncate">{{ t.description || t.category?.name || 'Sin descripción' }}</p>
               <p class="text-xs text-slate-500 dark:text-slate-400 truncate">{{ t.category?.name || '—' }} · {{ t.account?.name }}</p>
             </div>
-            <span [class]="t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'"
-                  class="text-sm font-semibold">
+            <span [class]="t.type === 'income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'"
+                  class="text-sm font-semibold shrink-0">
               {{ t.type === 'income' ? '+' : '−' }} {{ t.amount | money }}
             </span>
             <a [routerLink]="['/transactions', t.id]"
-               class="text-xs text-slate-400 hover:text-primary-600 ml-1">Editar</a>
+               class="text-xs text-slate-400 hover:text-primary-600 ml-1 shrink-0">Editar</a>
             <button (click)="remove(t.id)"
-                    class="text-xs text-slate-400 hover:text-rose-600 ml-2">×</button>
+                    class="text-xs text-slate-400 hover:text-rose-600 ml-2 shrink-0">×</button>
           </li>
         }
       </ul>
