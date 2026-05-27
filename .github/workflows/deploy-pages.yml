@@ -7,16 +7,14 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -34,7 +32,7 @@ jobs:
       - name: Build (production)
         run: npm run build -- --configuration production --base-href "/La-Caleta/"
 
-      - name: Prepare SPA entry files
+      - name: Prepare SPA files
         shell: bash
         run: |
           if [ -d "dist/la-caleta/browser" ]; then
@@ -42,32 +40,12 @@ jobs:
           else
             APP_DIR="dist/la-caleta"
           fi
-
           touch "$APP_DIR/.nojekyll"
-
-          if [ -f "$APP_DIR/index.csr.html" ]; then
-            cp "$APP_DIR/index.csr.html" "$APP_DIR/index.html"
-          fi
-
           cp "$APP_DIR/index.html" "$APP_DIR/404.html"
-
           echo "APP_DIR=$APP_DIR" >> $GITHUB_ENV
 
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Deploy to gh-pages
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          path: ${{ env.APP_DIR }}
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v4
+          folder: ${{ env.APP_DIR }}
+          branch: gh-pages
