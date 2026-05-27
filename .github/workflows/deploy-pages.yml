@@ -32,27 +32,26 @@ jobs:
         run: npm install
 
       - name: Build (production)
-        run: >-
-          npm run build --
-          --configuration production
-          --base-href "/"
-          --deploy-url "/"
+        run: npm run build -- --configuration production --base-href "/La-Caleta/"
 
       - name: Prepare SPA entry files
         shell: bash
         run: |
-          APP_DIR="dist/la-caleta"
+          if [ -d "dist/la-caleta/browser" ]; then
+            APP_DIR="dist/la-caleta/browser"
+          else
+            APP_DIR="dist/la-caleta"
+          fi
 
-          # Disable Jekyll processing on GitHub Pages.
           touch "$APP_DIR/.nojekyll"
 
-          # Angular SSR build outputs index.csr.html for client-side rendering.
           if [ -f "$APP_DIR/index.csr.html" ]; then
             cp "$APP_DIR/index.csr.html" "$APP_DIR/index.html"
           fi
 
-          # GitHub Pages + Angular Router deep links: serve the app for 404s.
           cp "$APP_DIR/index.html" "$APP_DIR/404.html"
+
+          echo "APP_DIR=$APP_DIR" >> $GITHUB_ENV
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
@@ -60,7 +59,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist/la-caleta
+          path: ${{ env.APP_DIR }}
 
   deploy:
     needs: build
