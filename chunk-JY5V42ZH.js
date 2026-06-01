@@ -1,0 +1,1 @@
+import{Ja as t}from"./chunk-RILNA5X6.js";var i=class r{transform(n,e="COP"){let m=Number(n??0);return new Intl.NumberFormat("es-CO",{style:"currency",currency:e,maximumFractionDigits:0}).format(m)}static \u0275fac=function(e){return new(e||r)};static \u0275pipe=t({name:"money",type:r,pure:!0})};export{i as a};
