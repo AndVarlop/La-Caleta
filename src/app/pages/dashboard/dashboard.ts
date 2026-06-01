@@ -42,6 +42,20 @@ export class DashboardPage {
   readonly byCategory = signal<CategoryTotal[]>([]);
   readonly pocketsTotal = signal(0);
 
+  private readonly today = new Date();
+  readonly selectedYear = signal(this.today.getFullYear());
+  readonly selectedMonth = signal(this.today.getMonth() + 1);
+
+  readonly monthLabel = computed(() => {
+    const d = new Date(this.selectedYear(), this.selectedMonth() - 1, 1);
+    return d.toLocaleDateString('es', { month: 'long', year: 'numeric' });
+  });
+
+  readonly isCurrentMonth = computed(() =>
+    this.selectedYear() === this.today.getFullYear() &&
+    this.selectedMonth() === this.today.getMonth() + 1
+  );
+
   readonly chart = computed<ChartConfiguration>(() => {
     const items = this.byCategory();
     return {
@@ -99,17 +113,37 @@ export class DashboardPage {
     this.load();
   }
 
+  prevMonth() {
+    let y = this.selectedYear();
+    let m = this.selectedMonth() - 1;
+    if (m < 1) { m = 12; y--; }
+    this.selectedYear.set(y);
+    this.selectedMonth.set(m);
+    this.load();
+  }
+
+  nextMonth() {
+    let y = this.selectedYear();
+    let m = this.selectedMonth() + 1;
+    if (m > 12) { m = 1; y++; }
+    this.selectedYear.set(y);
+    this.selectedMonth.set(m);
+    this.load();
+  }
+
   async load() {
     this.loading.set(true);
     this.error.set(null);
     try {
-      const now = new Date();
-      const y = now.getFullYear();
-      const m = now.getMonth() + 1;
+      const y = this.selectedYear();
+      const m = this.selectedMonth();
+      const from = `${y}-${String(m).padStart(2, '0')}-01`;
+      const lastDay = new Date(y, m, 0).getDate();
+      const to = `${y}-${String(m).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
       const [balance, month, recent, byCategory, pockets] = await Promise.all([
         this.tx.totalBalance(),
         this.tx.monthSummary(y, m),
-        this.tx.list({ limit: 5 }),
+        this.tx.list({ from, to, limit: 5 }),
         this.tx.expensesByCategory(y, m),
         this.pockets.list(),
       ]);

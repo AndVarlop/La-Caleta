@@ -8,8 +8,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:la-caleta": "node dist/la-caleta/server/server.mjs",
-    "build:pages": "ng build --configuration production --base-href \"/La-Caleta/\"",
-    "deploy": "npm run build:pages && npx angular-cli-ghpages --dir=dist/la-caleta --no-silent"
+    "build:pages": "ng build --configuration production --base-href \"/\"",
+    "deploy": "npm run build:pages && npx angular-cli-ghpages --dir=dist/la-caleta/browser --no-silent"
   },
   "private": true,
   "packageManager": "npm@11.6.2",

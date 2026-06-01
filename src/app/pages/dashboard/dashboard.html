@@ -28,7 +28,7 @@
   <p class="text-sm text-rose-600 bg-rose-50 dark:bg-rose-950/40 rounded-lg px-3 py-2 mb-4">{{ error() }}</p>
 }
 
-<section [appReveal]="'.kpi-card'" class="grid grid-cols-3 gap-3 mb-6">
+<section [appReveal]="'.kpi-card'" class="grid grid-cols-3 gap-3 mb-6" aria-label="Resumen mensual">
   <div class="kpi-card bg-white dark:bg-slate-900 rounded-2xl p-4 ring-1 ring-slate-100 dark:ring-slate-800">
     <p class="text-xs text-slate-500 dark:text-slate-400">Ingresos</p>
     <p class="text-base md:text-xl font-semibold text-emerald-600 mt-1" [appCount]="month().income" prefix="$ "></p>
@@ -45,7 +45,18 @@
 
 <section class="bg-white dark:bg-slate-900 rounded-2xl ring-1 ring-slate-100 dark:ring-slate-800 p-4 mb-6">
   <div class="flex items-center justify-between mb-4">
-    <h2 class="text-sm font-semibold text-slate-700 dark:text-slate-200">Balance del mes</h2>
+    <button (click)="prevMonth()" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+    </button>
+    <div class="text-center">
+      <h2 class="text-sm font-semibold text-slate-700 dark:text-slate-200 capitalize">{{ monthLabel() }}</h2>
+      @if (isCurrentMonth()) {
+        <span class="text-[10px] text-primary-500">Mes actual</span>
+      }
+    </div>
+    <button (click)="nextMonth()" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 dark:text-slate-400">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+    </button>
   </div>
   @if (month().income > 0 || month().expense > 0) {
     <div class="grid grid-cols-[auto_1fr] gap-4 items-center">

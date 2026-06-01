@@ -29,7 +29,7 @@
             "tsConfig": "tsconfig.app.json",
             "ssr": false,
             "prerender": false,
-            "baseHref": "/La-Caleta/",
+            "baseHref": "/",
             "assets": [
               {
                 "glob": "**/*",
